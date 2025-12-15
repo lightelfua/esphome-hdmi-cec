@@ -1,4 +1,4 @@
-UPDATE: I'm no longer maintaining this. Go checkout this excellent alternative from @Palakis: https://github.com/Palakis/esphome-native-hdmi-cec
+UPDATE: I'm no longer maintaining this. Go checkout this excellent alternative from @Palakis: https://github.com/Palakis/esphome-native-hdmi-cec. It is a drop-in replacement.
 
 # HDMI-CEC ESPHome Component
 
