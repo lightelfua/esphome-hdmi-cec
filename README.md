@@ -1,3 +1,5 @@
+UPDATE: I'm no longer maintaining this. Go checkout this excellent alternative from @Palakis: https://github.com/Palakis/esphome-native-hdmi-cec
+
 # HDMI-CEC ESPHome Component
 
 An ESPHome component that supports receiving and transmitting HDMI-CEC messages to connected HDMI devices. The ultimate goal of this project is to eventually be merged into the core ESPHome project once it's up to quality. It's currently out for review as [esphome/esphome#3017](https://github.com/esphome/esphome/pull/3017/) (see also: [esphome/esphome-docs#1789](https://github.com/esphome/esphome-docs/pull/1789)).
