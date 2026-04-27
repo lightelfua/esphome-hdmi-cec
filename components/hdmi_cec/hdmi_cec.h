@@ -14,13 +14,10 @@
 namespace esphome {
 namespace hdmi_cec {
 
+class HdmiCec;
 class HdmiCecTrigger;
 template<typename... Ts> class HdmiCecSendAction;
-public:
-  const optional<uint8_t> &get_source() const { return this->source_; }
-  const optional<uint8_t> &get_destination() const { return this->destination_; }
-  const optional<uint8_t> &get_opcode() const { return this->opcode_; }
-  const optional<std::vector<uint8_t>> &get_data() const { return this->data_; }
+
 static const uint8_t HDMI_CEC_MAX_DATA_LENGTH = 16;
 
 class HdmiCec : public Component, CEC_Device {
@@ -71,7 +68,6 @@ class HdmiCec : public Component, CEC_Device {
 template<typename... Ts>
 class HdmiCecSendAction : public Action<Ts...>, public Parented<HdmiCec> {
  public:
-  // DATA
   void set_data_template(const std::function<std::vector<uint8_t>(Ts...)> &func) {
     this->data_func_ = func;
     this->data_static_.reset();
@@ -82,7 +78,6 @@ class HdmiCecSendAction : public Action<Ts...>, public Parented<HdmiCec> {
     this->data_func_ = nullptr;
   }
 
-  // SOURCE
   void set_source(uint8_t source) {
     this->source_ = source;
     this->source_func_ = nullptr;
@@ -93,7 +88,6 @@ class HdmiCecSendAction : public Action<Ts...>, public Parented<HdmiCec> {
     this->source_.reset();
   }
 
-  // DESTINATION
   void set_destination(uint8_t destination) {
     this->destination_ = destination;
     this->destination_func_ = nullptr;
@@ -152,6 +146,12 @@ class HdmiCecTrigger : public Trigger<uint8_t, uint8_t, std::vector<uint8_t>>, p
   void set_destination(uint8_t destination) { this->destination_ = destination; }
   void set_opcode(uint8_t opcode) { this->opcode_ = opcode; }
   void set_data(const std::vector<uint8_t> &data) { this->data_ = data; }
+
+  // getters (IMPORTANT for cpp filtering)
+  const optional<uint8_t> &get_source() const { return this->source_; }
+  const optional<uint8_t> &get_destination() const { return this->destination_; }
+  const optional<uint8_t> &get_opcode() const { return this->opcode_; }
+  const optional<std::vector<uint8_t>> &get_data() const { return this->data_; }
 
  protected:
   HdmiCec *parent_;
