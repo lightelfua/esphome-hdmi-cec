@@ -75,11 +75,18 @@ void HdmiCec::OnReceiveComplete(unsigned char *buffer, int count, bool ack) {
 
   uint8_t opcode = buffer[0];
   for (auto *trigger : this->triggers_) {
-    if ((!trigger->opcode_.has_value() || (*trigger->opcode_ == opcode)) &&
-        (!trigger->source_.has_value() || (*trigger->source_ == source)) &&
-        (!trigger->destination_.has_value() || (*trigger->destination_ == destination)) &&
-        (!trigger->data_.has_value() ||
-         (count == trigger->data_->size() && std::equal(trigger->data_->begin(), trigger->data_->end(), buffer)))) {
+    const auto &t_opcode = trigger->get_opcode();
+    const auto &t_source = trigger->get_source();
+    const auto &t_destination = trigger->get_destination();
+    const auto &t_data = trigger->get_data();
+
+    if ((!t_opcode.has_value() || (*t_opcode == opcode)) &&
+        (!t_source.has_value() || (*t_source == source)) &&
+        (!t_destination.has_value() || (*t_destination == destination)) &&
+        (!t_data.has_value() ||
+         (count == t_data->size() &&
+          std::equal(t_data->begin(), t_data->end(), buffer)))) {
+
       auto data_vec = std::vector<uint8_t>(buffer, buffer + count);
       trigger->trigger(source, destination, data_vec);
     }

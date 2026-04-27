@@ -16,7 +16,11 @@ namespace hdmi_cec {
 
 class HdmiCecTrigger;
 template<typename... Ts> class HdmiCecSendAction;
-
+public:
+  const optional<uint8_t> &get_source() const { return this->source_; }
+  const optional<uint8_t> &get_destination() const { return this->destination_; }
+  const optional<uint8_t> &get_opcode() const { return this->opcode_; }
+  const optional<std::vector<uint8_t>> &get_data() const { return this->data_; }
 static const uint8_t HDMI_CEC_MAX_DATA_LENGTH = 16;
 
 class HdmiCec : public Component, CEC_Device {
