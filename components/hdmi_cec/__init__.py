@@ -106,7 +106,7 @@ async def to_code(config):
 
     cg.add_library(
         name="hdmi_cec",
-        repository="https://github.com//lighelfua/CEC.git",
+        repository="https://github.com//lightelfua/CEC.git",
         version=None
     )
     cg.add(var.set_address([config[CONF_ADDRESS]]))
