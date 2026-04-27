@@ -138,22 +138,37 @@ void HdmiCec::send_data_internal_(uint8_t source, uint8_t destination, unsigned 
 void HdmiCec::add_trigger(HdmiCecTrigger *trigger) { this->triggers_.push_back(trigger); };
 
 void HdmiCec::loop() {
+  static uint32_t last_run = 0;
+  static uint32_t counter = 0;
+  static uint32_t last_log = 0;
+
+  uint32_t now = micros();
+
+  // HARD LIMIT
+  if (now - last_run < 25) {   // ~25µs (≈40kHz ceiling)
+    return;
+  }
+  last_run = now;
+
+  // CRITICAL SECTION
   this->disable_line_interrupts_ = true;
   this->Run();
   this->disable_line_interrupts_ = false;
 
-  // The current implementation of CEC is inefficient and relies on polling to
-  // identify signal changes at just the right time. Experimentally it needs to
-  // run faster than every ~0.04ms to be reliable. This can be solved by creating
-  // an interrupt-driven CEC driver.
-  static int counter = 0;
-  static int timer = 0;
-  if (millis() - timer > 10000) {
-    ESP_LOGD(TAG, "Ran %d times in 10000ms (every %fms)", counter, 10000.0f / (float) counter);
-    counter = 0;
-    timer = millis();
+  // ESPHOME YIELD SAFETY
+  if ((counter++ & 0x3F) == 0) {
+    yield();
   }
-  counter++;
+
+  // DEBUG LOG
+  uint32_t ms = millis();
+  if (ms - last_log > 10000) {
+    float avg = (10000.0f / (float) counter);
+    ESP_LOGD(TAG, "CEC loop: %u runs / 10s (%.3f ms avg)", counter, avg);
+
+    counter = 0;
+    last_log = ms;
+  }
 }
 
 }  // namespace hdmi_cec
